@@ -18,18 +18,7 @@ trait TestHelper
      * @return MockBuilder
      */
     abstract public function getMockBuilder($className): MockBuilder;
-    
-    /**
-     * Assert that the array contains the expected subset.
-     *
-     * @param array       $subset
-     * @param array|mixed $array
-     * @param boolean     $strict
-     * @param string      $message
-     * @return void
-     */
-    abstract public function assertArraySubset($subset, $array, bool $strict = false, string $message = ''): void;
-    
+        
     
     /**
      * Call a private or protected method
@@ -73,8 +62,17 @@ trait TestHelper
      */
     protected function assertLastError(int $type, string $message = null): void
     {
-        $expected = compact('type') + (isset($message) ? compact('message') : []);
-        $this->assertArraySubset($expected, error_get_last());
+        $err = error_get_last();
+
+        if ($err === null) {
+            $this->fail("No warning or notice was triggered");
+        }
+
+        $this->assertEquals($type, $err['type'], "error type");
+
+        if (isset($message)) {
+            $this->assertEquals($message, $err['message'], "error message");
+        }
     }
     
     
