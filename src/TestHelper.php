@@ -4,7 +4,7 @@ namespace Jasny;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\MockBuilder;
-use PHPUnit\Framework\MockObject\Matcher\Invocation;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
  * Helper methods
@@ -94,12 +94,12 @@ trait TestHelper
      *   );
      * </code>
      *
-     * @param Invocation          $matcher
+     * @param InvocationOrder     $matcher
      * @param \Closure|array|null $assert
      * @param mixed               $return
      * @return MockObject|callable
      */
-    protected function createCallbackMock(Invocation $matcher, $assert = null, $return = null): MockObject
+    protected function createCallbackMock($matcher, $assert = null, $return = null): MockObject
     {
         if (isset($assert) && !is_array($assert) && !$assert instanceof \Closure) {
             $type = (is_object($assert) ? get_class($assert) . ' ' : '') . gettype($assert);
