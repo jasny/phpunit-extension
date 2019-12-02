@@ -18,6 +18,9 @@ trait ExpectWarningTrait
      */
     private $expectedWarnings;
 
+    abstract public function getStatus(): int;
+    abstract public function addToAssertionCount(int $count);
+
     /**
      * @before
      * @internal
