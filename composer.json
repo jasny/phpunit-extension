@@ -1,6 +1,6 @@
 {
     "name": "jasny/phpunit-extension",
-    "description": "",
+    "description": "Additional functionality for PHPUnit (callback mock, expected warning, ...)",
     "license": "MIT",
     "type": "library",
     "authors": [
