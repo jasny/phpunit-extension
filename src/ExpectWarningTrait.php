@@ -6,9 +6,6 @@ namespace Jasny\PHPUnit;
 
 use Jasny\PHPUnit\Util\ExpectedWarnings;
 use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\Error\Deprecated;
-use PHPUnit\Framework\Error\Notice;
-use PHPUnit\Framework\Error\Warning as WarningError;
 use PHPUnit\Runner\BaseTestRunner;
 
 trait ExpectWarningTrait
