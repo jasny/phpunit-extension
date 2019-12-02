@@ -1,34 +1,21 @@
 <?php
 
-namespace Jasny;
+declare(strict_types=1);
 
-use Jasny\TestHelper;
+namespace Jasny\PHPUnit\Tests;
+
+use Jasny\PHPUnit\CallbackMockTrait;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\ExpectationFailedException;
 
 /**
- * @covers \Jasny\TestHelper
+ * @covers \Jasny\PHPUnit\CallbackMockTrait
  */
-class TestHelperTest extends TestCase
+class CallbackMockTraitTest extends TestCase
 {
-    use TestHelper;
+    use CallbackMockTrait;
 
-    protected $object;
-    
-    public function setUp(): void
-    {
-        $this->object = new class {
-            private $privateProp;
-            protected $protectedProp;
-            public $publicProp;
-            
-            private function privateMethod($whois = 'I am') { return "$whois private"; }
-            protected function protectedMethod($whois = 'I am') { return "$whois protected"; }
-            public function publicMethod($whois = 'I am') { return "$whois public"; }
-        };
-    }
-    
     protected function forgetMockObjects()
     {
         $refl = new \ReflectionProperty(TestCase::class, 'mockObjects');
@@ -36,73 +23,7 @@ class TestHelperTest extends TestCase
         
         $refl->setValue($this, []);
     }
-    
-    
-    public function accessProvider()
-    {
-        return [
-            ['private'],
-            ['protected'],
-            ['public']
-        ];
-    }
-    
-    
-    /**
-     * @dataProvider accessProvider
-     * @param string $access
-     */
-    public function testCallPrivateMethod($access)
-    {
-        $result = $this->callPrivateMethod($this->object, $access . 'Method');
-        
-        $this->assertEquals("I am $access", $result);
-    }
-    
-    /**
-     * @dataProvider accessProvider
-     * @param string $access
-     */
-    public function testCallPrivateMethodWithArgument($access)
-    {
-        $result = $this->callPrivateMethod($this->object, $access . 'Method', ['You are']);
-        
-        $this->assertEquals("You are $access", $result);
-    }
-    
-    
-    /**
-     * @dataProvider accessProvider
-     * @param string $access
-     */
-    public function testSetPrivateProperty($access)
-    {
-        $this->setPrivateProperty($this->object, $access . 'Prop', 'foo');
-        
-        $this->assertAttributeEquals('foo', $access . 'Prop', $this->object);
-    }
-    
-    
-    public function errorLevelProvider()
-    {
-        return [
-            [E_USER_NOTICE],
-            [E_USER_WARNING]
-        ];
-    }
-    
-    /**
-     * @dataProvider errorLevelProvider
-     * @param int $level
-     */
-    public function testAssertLastError($level)
-    {
-        @trigger_error("Some error", $level);
-        
-        $this->assertLastError($level, "Some error");
-    }
-    
-    
+
     public function testCreateCallbackMock()
     {
         $callback = $this->createCallbackMock($this->any());
@@ -153,7 +74,7 @@ class TestHelperTest extends TestCase
     
     public function testCreateCallbackMockAssertInvoke()
     {
-        $callback = $this->createCallbackMock($this->once(), function(InvocationMocker $invoke) {
+        $callback = $this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
             $invoke->with('foo', 'zoo')->willReturn('bar');
         });
         
@@ -164,7 +85,7 @@ class TestHelperTest extends TestCase
     
     public function testCreateCallbackMockAssertInvokeFail()
     {
-        $callback = $this->createCallbackMock($this->once(), function(InvocationMocker $invoke) {
+        $callback = $this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
             $invoke->with('foo');
         });
         
@@ -178,11 +99,10 @@ class TestHelperTest extends TestCase
         }
     }
     
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testCreateCallbackMockInvalidAssert()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->createCallbackMock($this->once(), 'foo');
     }
 }
