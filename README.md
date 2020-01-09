@@ -10,6 +10,7 @@ Jasny PHPUnit extension
 Additional functionality for PHPUnit.
 
 * [Callback mock](#callback-mock) - assert that callback is called with correct arguments.
+* [Safe mocks](#safe-mocks) - disable auto-return value generation for mocks.
 * [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running!
 * [Private access](#private-access) - Access private/protected methods and properties.
 
@@ -58,6 +59,35 @@ class MyTest extends TestCase
     }
 }
 ```
+
+### Safe Mocks
+
+The `SafeMocksTrait` overwrites the `createMock` method to disable auto-return value generation. This means that the
+test will fail if any method is called that isn't configured. 
+
+```php
+use Jasny\PHPUnit\SafeMocksTrait;
+use PHPUnit\Framework\TestCase;
+
+class MyTest extends TestCase
+{
+    use SafeMocksTrait;
+    
+    public function test()
+    {
+        $foo = $this->createMock(Foo::class);
+        $foo->expects($this->once())->method('hello');
+    
+        $foo->hello();
+        $foo->bye();
+    }
+}
+```
+
+In the example above, the method `bye()` isn't configured for `$foo`. Normally the test would succeed, but with
+`SafeMocksTrait` this test will result in the failure
+
+    Return value inference disabled and no expectation set up for Foo::bye()
 
 ### Expected warning
 
@@ -137,9 +167,6 @@ class MyTest extends TestCase
 
 Call private and protected methods and get or set private and protected properties.
 
-_You should only test via public methods and properties. When you're required to access private methods or properties
-to perform tests, something is likely wrong in the architecture of your code._
-
 ```php
 use Jasny\PHPUnit\PrivateAccessTrait;
 use PHPUnit\Framework\TestCase;
@@ -162,3 +189,6 @@ class MyTest extends TestCase
     }
 }
 ```
+
+_**Beware:** You should only test via public methods and properties. When you're required to access private methods or
+properties to perform tests, something is likely wrong in the architecture of your code._
