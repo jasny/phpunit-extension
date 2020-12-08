@@ -18,7 +18,7 @@ trait SafeMocksTrait
      * @param string $className
      * @return MockBuilder
      */
-    abstract public function getMockBuilder($className): MockBuilder;
+    abstract public function getMockBuilder(string $className): MockBuilder;
 
     /**
      * Returns a mock object for the specified class.

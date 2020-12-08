@@ -20,7 +20,7 @@ trait CallbackMockTrait
      * @param string $className
      * @return MockBuilder
      */
-    abstract public function getMockBuilder($className): MockBuilder;
+    abstract public function getMockBuilder(string $className): MockBuilder;
 
     /**
      * Create mock for next callback.

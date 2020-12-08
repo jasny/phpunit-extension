@@ -7,6 +7,7 @@ namespace Jasny\PHPUnit\Tests;
 use Jasny\PHPUnit\SafeMocksTrait;
 use Jasny\PHPUnit\Tests\Support\Dummy;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\ReturnValueNotConfiguredException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,7 +22,11 @@ class SafeMocksTraitTest extends TestCase
         $mock = $this->createMock(Dummy::class);
         $mock->expects($this->once())->method('hello');
 
-        $this->expectException(ExpectationFailedException::class);
+        $exceptionClass = class_exists(ReturnValueNotConfiguredException::class)
+            ? ReturnValueNotConfiguredException::class
+            : ExpectationFailedException::class;
+
+        $this->expectException($exceptionClass);
         $this->expectExceptionMessage('Return value inference disabled and no expectation set up for '
             . Dummy::class . '::bye()');
 

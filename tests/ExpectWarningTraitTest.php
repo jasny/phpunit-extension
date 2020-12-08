@@ -6,7 +6,7 @@ namespace Jasny\PHPUnit\Tests;
 
 use Jasny\PHPUnit\ExpectWarningTrait;
 use Jasny\PHPUnit\Util\ExpectedWarnings;
-use PHPUnit\Framework\Error\Warning;
+use PHPUnit\Framework\Error;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -77,7 +77,8 @@ class ExpectWarningTraitTest extends TestCase
 
         try {
             trigger_error("Some error", E_USER_WARNING);
-        } catch (Warning $notice) {
+        } catch (Error $notice) {          // PHPUnit 8
+        } catch (Error\Warning $notice) {  // PHPUnit 9
         }
     }
 
@@ -89,7 +90,8 @@ class ExpectWarningTraitTest extends TestCase
 
         try {
             trigger_error("Other error", E_USER_WARNING);
-        } catch (Warning $notice) {
+        } catch (Error $notice) {          // PHPUnit 8
+        } catch (Error\Warning $notice) {  // PHPUnit 9
         }
 
         $this->assertNotTriggered(3);
