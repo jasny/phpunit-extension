@@ -88,7 +88,9 @@ final class ExpectedWarnings
      */
     public function getNotTriggered(): array
     {
-        return array_filter($this->expected, fn (array $expected) => !$expected['triggered']);
+        return array_filter($this->expected, function (array $expected) {
+            return !$expected['triggered'];
+        });
     }
 
     /**
