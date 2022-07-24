@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jasny\PHPUnit\Tests;
+
+use Jasny\PHPUnit\InContextOfTrait;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers \Jasny\PHPUnit\InContextOfTrait
+ */
+class InContextOfTraitTest extends TestCase
+{
+    use InContextOfTrait;
+
+    public function test()
+    {
+        $object = new class {
+            private $privateProp = "foo";
+            private function privateMethod($planet) { return "hello $planet"; }
+        };
+        
+        $result = $this->inContextOf($object, fn() => [
+            $object->privateProp,
+            $object->privateMethod("world")
+        ]);
+        
+        $this->assertEquals(["foo", "hello world"], $result);
+    }
+}
