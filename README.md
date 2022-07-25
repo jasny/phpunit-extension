@@ -12,7 +12,7 @@ Additional functionality for PHPUnit.
 * [Callback mock](#callback-mock) - assert that callback is called with correct arguments.
 * [Safe mocks](#safe-mocks) - disable auto-return value generation for mocks.
 * [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running!
-* [Private access](#private-access) - Access private/protected methods and properties.
+* [In context of](#in-context-of) - Access private/protected methods and properties.
 
 Installation
 ---
@@ -159,36 +159,50 @@ class MyTest extends TestCase
 }
 ```
 
-### Private access
+### In context of
 
-    mixed callPrivateMethod(object $object, string $method, array $args = [])
-    mixed setPrivateProperty($object, string $property, $value)
-    mixed getPrivateProperty($object, string $property)
+    mixed inContextOf(object $object, \Closure $function)
 
-Call private and protected methods and get or set private and protected properties.
+The function is called in context of the given object. This allows to call private and protected methods and get or set
+private and protected properties.
 
 ```php
-use Jasny\PHPUnit\PrivateAccessTrait;
+use Jasny\PHPUnit\InContextOfTrait;
 use PHPUnit\Framework\TestCase;
 
 class MyTest extends TestCase
 {
-    use PrivateAccessTrait;
+    use InContextOfTrait;
     
-    public function test()
+    public function testCallPrivateMethod()
     {
         $object = new MyObject();
     
-        $result = $this->callPrivateMethod($object, 'privateMethod', ['foo', 'bar']);
+        $result = $this->inContextOf($object, fn() => $object->privateMethod('foo', 'bar'));
         $this->assertEquals($result, 'foo-bar');
-
-        $value = $this->getPrivateProperty($object, 'privateProperty');
+    }
+    
+    
+    public function testGetPrivateProperty()
+    {
+        $value = $this->inContextOf($object, fn() => $object->privateProperty);
         $this->assertEquals($value, 999);
+    }
+    
+    
+    /** Alternatively, do the assert in the closure */
+    public function testAssertPrivateProperty()
+    {
+        $this->inContextOf($object, fn() => $this->assertEquals($object->privateProperty, 999));
+    }
 
-        $this->setPrivateProperty($object, 'privateProperty', 42);
+    public function testSetPrivateProperty()
+    {
+        $this->inContextOf($object, fn() => $object->privateProperty = 42);
     }
 }
 ```
+
 
 _**Beware:** You should only test via public methods and properties. When you're required to access private methods or
 properties to perform tests, something is likely wrong in the architecture of your code._

@@ -6,6 +6,7 @@ namespace Jasny\PHPUnit;
 
 /**
  * Trait for accessing private/protected methods and properties.
+ * @deprecated
  */
 trait PrivateAccessTrait
 {
