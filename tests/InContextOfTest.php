@@ -28,4 +28,14 @@ class InContextOfTraitTest extends TestCase
         
         $this->assertEquals(["foo", "hello world"], $result);
     }
+    
+    public function testThis()
+    {
+        $object = new class {
+            private $privateProp = "foo";
+        };
+        
+        $this->inContextOf($object, fn() => $this->assertEquals('foo', $object->privateProp));
+    }
 }
+
