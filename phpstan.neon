@@ -2,7 +2,7 @@ parameters:
     level: 4
     paths:
         - src
-    excludes_analyse:
+    excludePaths:
         - src/Util/DummyCallback.php
 includes:
   	- vendor/phpstan/phpstan-strict-rules/rules.neon

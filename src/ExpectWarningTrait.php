@@ -6,32 +6,25 @@ namespace Jasny\PHPUnit;
 
 use Jasny\PHPUnit\Util\ExpectedWarnings;
 use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Runner\BaseTestRunner;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\TestStatus\TestStatus;
 
 trait ExpectWarningTrait
 {
-    /**
-     * @var ExpectedWarnings
-     */
-    private $expectedWarnings;
+    protected ExpectedWarnings|null $expectedWarnings;
 
-    abstract public function getStatus(): int;
+    abstract public function status(): TestStatus;
     abstract public function addToAssertionCount(int $count);
 
-    /**
-     * @before
-     * @internal
-     */
+    #[Before]
     protected function registerExpectedWarnings(): void
     {
         $this->expectedWarnings = new ExpectedWarnings();
         $this->expectedWarnings->register();
     }
 
-    /**
-     * @after
-     * @internal
-     */
+    #[After]
     protected function unregisterExpectedWarnings(): void
     {
         if ($this->expectedWarnings === null) {
@@ -47,8 +40,11 @@ trait ExpectWarningTrait
      */
     protected function assertPostConditions(): void
     {
-        $okStatus = [BaseTestRunner::STATUS_PASSED, BaseTestRunner::STATUS_RISKY, BaseTestRunner::STATUS_UNKNOWN];
-        if ($this->expectedWarnings === null || !in_array($this->getStatus(), $okStatus, true)) {
+        if ($this->expectedWarnings === null) {
+            return;
+        }
+
+        if (!$this->status()->isSuccess() && !$this->status()->isRisky() && !$this->status()->isUnknown()) {
             return;
         }
 

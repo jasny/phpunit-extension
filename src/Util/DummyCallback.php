@@ -17,5 +17,6 @@ class DummyCallback
      */
     public function __invoke()
     {
+        return null;
     }
 }

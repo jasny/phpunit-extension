@@ -15,7 +15,7 @@ class DeprecationContinueTest extends TestCase
 {
     use ExpectWarningTrait;
 
-    public function test()
+    public function testFoo()
     {
         $func = function (float $a) {
             trigger_error("Use my_new_func() instead", E_USER_DEPRECATED);

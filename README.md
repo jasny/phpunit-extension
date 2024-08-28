@@ -10,7 +10,6 @@ Jasny PHPUnit extension
 Additional functionality for PHPUnit.
 
 * [Callback mock](#callback-mock) - assert that callback is called with correct arguments.
-* [Safe mocks](#safe-mocks) - disable auto-return value generation for mocks.
 * [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running!
 * [In context of](#in-context-of) - Access private/protected methods and properties.
 

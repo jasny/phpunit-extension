@@ -6,18 +6,17 @@ namespace Jasny\PHPUnit\Tests;
 
 use Jasny\PHPUnit\ExpectWarningTrait;
 use Jasny\PHPUnit\Util\ExpectedWarnings;
-use PHPUnit\Framework\Error;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Jasny\PHPUnit\ExpectWarningTrait
- * @covers \Jasny\PHPUnit\Util\ExpectedWarnings
- */
+#[CoversClass(ExpectedWarnings::class)]
+#[CoversClass(ExpectWarningTrait::class)]
 class ExpectWarningTraitTest extends TestCase
 {
     use ExpectWarningTrait;
 
-    public function typeProvider()
+    public static function typeProvider()
     {
         return [
             'notice' => [E_USER_NOTICE, 'Notice'],
@@ -34,33 +33,26 @@ class ExpectWarningTraitTest extends TestCase
         $this->assertCount($count, $notTriggered);
     }
 
-    /**
-     * @dataProvider typeProvider
-     */
+    #[DataProvider('typeProvider')]
     public function testExpectNotice(int $errno, string $type): void
     {
         $this->{"expect{$type}"}();
         trigger_error("Some error", $errno);
     }
 
-    /**
-     * @dataProvider typeProvider
-     */
+    #[DataProvider('typeProvider')]
     public function testExpectNoticeMessage(int $errno, string $type): void
     {
         $this->{"expect{$type}Message"}("Some error");
         trigger_error("Some error", $errno);
     }
 
-    /**
-     * @dataProvider typeProvider
-     */
+    #[DataProvider('typeProvider')]
     public function testExpectNoticeMessageMatches(int $errno, string $type): void
     {
         $this->{"expect{$type}MessageMatches"}("/some err(or)?/i");
         trigger_error("Some error", $errno);
     }
-
 
     public function testNotTriggered()
     {
@@ -74,12 +66,7 @@ class ExpectWarningTraitTest extends TestCase
     public function testNoExpectedWarning()
     {
         $this->expectNotToPerformAssertions();
-
-        try {
-            trigger_error("Some error", E_USER_WARNING);
-        } catch (Error $notice) {          // PHPUnit 8
-        } catch (Error\Warning $notice) {  // PHPUnit 9
-        }
+        trigger_error("Some error", E_USER_WARNING);
     }
 
     public function testUnexpectedWarning()
@@ -88,17 +75,13 @@ class ExpectWarningTraitTest extends TestCase
         $this->expectDeprecationMessageMatches('/err(or)?/');
         $this->expectWarningMessage("Some error");
 
-        try {
-            trigger_error("Other error", E_USER_WARNING);
-        } catch (Error $notice) {          // PHPUnit 8
-        } catch (Error\Warning $notice) {  // PHPUnit 9
-        }
+        trigger_error("Other error", E_USER_WARNING);
 
         $this->assertNotTriggered(3);
     }
 
 
-    public function unexpectedProvider()
+    public static function unexpectedProvider()
     {
         return [
             'plain' => ['warning', ['type' => 'warning', 'message' => '']],
@@ -107,10 +90,7 @@ class ExpectWarningTraitTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider unexpectedProvider
-     */
-    public function testDescribeExpected(string $description, array $warning)
+    #[DataProvider('unexpectedProvider')] public function testDescribeExpected(string $description, array $warning)
     {
         $this->assertEquals($description, ExpectedWarnings::describeExpected($warning));
     }
