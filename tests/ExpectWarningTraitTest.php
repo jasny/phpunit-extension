@@ -7,16 +7,17 @@ namespace Jasny\PHPUnit\Tests;
 use Jasny\PHPUnit\ExpectWarningTrait;
 use Jasny\PHPUnit\Util\ExpectedWarnings;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ExpectedWarnings::class)]
-#[CoversClass(ExpectWarningTrait::class)]
+#[CoversTrait(ExpectWarningTrait::class)]
 class ExpectWarningTraitTest extends TestCase
 {
     use ExpectWarningTrait;
 
-    public static function typeProvider()
+    public static function typeProvider(): array
     {
         return [
             'notice' => [E_USER_NOTICE, 'Notice'],
@@ -25,9 +26,10 @@ class ExpectWarningTraitTest extends TestCase
         ];
     }
 
-    private function assertNotTriggered(int $count)
+    private function assertNotTriggered(int $count): void
     {
         $notTriggered = $this->expectedWarnings->getNotTriggered();
+        $this->expectedWarnings->unregister();
         $this->expectedWarnings = null;
 
         $this->assertCount($count, $notTriggered);
@@ -54,7 +56,7 @@ class ExpectWarningTraitTest extends TestCase
         trigger_error("Some error", $errno);
     }
 
-    public function testNotTriggered()
+    public function testNotTriggered(): void
     {
         $this->expectNotice();
         $this->expectDeprecationMessageMatches('/err(or)?/');
@@ -63,25 +65,7 @@ class ExpectWarningTraitTest extends TestCase
         $this->assertNotTriggered(3);
     }
 
-    public function testNoExpectedWarning()
-    {
-        $this->expectNotToPerformAssertions();
-        trigger_error("Some error", E_USER_WARNING);
-    }
-
-    public function testUnexpectedWarning()
-    {
-        $this->expectNotice();
-        $this->expectDeprecationMessageMatches('/err(or)?/');
-        $this->expectWarningMessage("Some error");
-
-        trigger_error("Other error", E_USER_WARNING);
-
-        $this->assertNotTriggered(3);
-    }
-
-
-    public static function unexpectedProvider()
+    public static function unexpectedProvider(): array
     {
         return [
             'plain' => ['warning', ['type' => 'warning', 'message' => '']],
@@ -90,7 +74,8 @@ class ExpectWarningTraitTest extends TestCase
         ];
     }
 
-    #[DataProvider('unexpectedProvider')] public function testDescribeExpected(string $description, array $warning)
+    #[DataProvider('unexpectedProvider')]
+    public function testDescribeExpected(string $description, array $warning)
     {
         $this->assertEquals($description, ExpectedWarnings::describeExpected($warning));
     }

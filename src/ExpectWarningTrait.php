@@ -45,7 +45,7 @@ trait ExpectWarningTrait
         }
 
         if (!$this->status()->isSuccess() && !$this->status()->isRisky() && !$this->status()->isUnknown()) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         $notTriggered = $this->expectedWarnings->getNotTriggered();

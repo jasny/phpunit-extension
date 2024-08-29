@@ -6,16 +6,15 @@ namespace Jasny\PHPUnit\Tests\Example;
 
 use Jasny\PHPUnit\ExpectWarningTrait;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class DeprecationContinueTest extends TestCase
 {
     use ExpectWarningTrait;
 
-    public function testFoo()
+    public function testFoo(): void
     {
         $func = function (float $a) {
             trigger_error("Use my_new_func() instead", E_USER_DEPRECATED);

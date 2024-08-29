@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Jasny\PHPUnit\Tests;
 
 use Jasny\PHPUnit\InContextOfTrait;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Jasny\PHPUnit\InContextOfTrait
- */
+#[CoversTrait(InContextOfTrait::class)]
 class InContextOfTraitTest extends TestCase
 {
     use InContextOfTrait;
