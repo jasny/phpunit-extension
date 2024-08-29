@@ -9,7 +9,7 @@ namespace PHPUnit\Framework\Attributes {
 
     if (!class_exists(CoversTrait::class)) {
         #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-        final readonly class CoversTrait
+        final class CoversTrait
         {
             private string $className;
 
