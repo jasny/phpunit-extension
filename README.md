@@ -12,7 +12,7 @@ Additional functionality for PHPUnit.
 * [Callback mock](#callback-mock) - assert that callback is called with correct arguments.
 * [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running.
 * [In context of](#in-context-of) - Access private/protected methods and properties.
-* [Consecutive calls](#consecutive-calls) - Assert multiple calls with different arguments.
+* [Consecutive calls](#consecutive-calls) - Replacement for removed `withConsecutive()` method.
 
 Installation
 ---
