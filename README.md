@@ -14,7 +14,7 @@ Additional functionality for PHPUnit.
 * [In context of](#in-context-of) - Access private/protected methods and properties.
 * [Consecutive calls](#consecutive-calls) - Assert multiple calls with different arguments.
 
-* Installation
+Installation
 ---
 
     composer require jasny/phpunit-extension
