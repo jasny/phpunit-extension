@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Jasny\PHPUnit\Tests;
 
-use Jasny\PHPUnit\Consecutive;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Jasny\PHPUnit\ConsecutiveTrait;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-#[CoversClass(Consecutive::class)]
-class ConsecutiveTest extends TestCase
+#[CoversTrait(ConsecutiveTrait::class)]
+class ConsecutiveTraitTest extends TestCase
 {
-    public function testCreate()
+    use ConsecutiveTrait;
+
+    public function test()
     {
         // Create a mock object
         $mock = $this->getMockBuilder(TestClass::class)
@@ -22,22 +24,22 @@ class ConsecutiveTest extends TestCase
         // Set up the expectation using Consecutive::create
         $mock->expects($this->exactly(2))
             ->method('testMethod')
-            ->with(...Consecutive::create(['a', 1], ['b', 2]));
+            ->with(...$this->consecutive(['a', 1], ['b', 2]));
 
         // Invoke the method with the expected parameters
         $mock->testMethod('a', 1);
         $mock->testMethod('b', 2);
     }
 
-    public function testCreateWithMismatchedParameters()
+    public function testWithMismatchedParameters()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Parameters count max much in all groups');
 
-        Consecutive::create(['a', 1], ['b']);
+        $this->consecutive(['a', 1], ['b']);
     }
 
-    public function testCreateWithNoMoreExpectedCalls()
+    public function testWithNoMoreExpectedCalls()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No more expected calls');
@@ -48,7 +50,7 @@ class ConsecutiveTest extends TestCase
 
         $mock->expects($this->any())
             ->method('testMethod')
-            ->with(...Consecutive::create(['a', 1], ['b', 2]));
+            ->with(...$this->consecutive(['a', 1], ['b', 2]));
 
         $mock->testMethod('a', 1);
         $mock->testMethod('b', 2);

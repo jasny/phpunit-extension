@@ -10,11 +10,11 @@ use PHPUnit\Framework\Constraint\IsEqual;
 use RuntimeException;
 
 /**
- * Usage: ->with(...Consecutive::create(...$withCodes))
+ * Usage: ->with(...$this->consecutive(['a', 1], ['b', 2]))
  */
-class Consecutive
+trait ConsecutiveTrait
 {
-    public static function create(...$parameterGroups): array
+    public static function consecutive(...$parameterGroups): array
     {
         $result = [];
         $parametersCount = null;
