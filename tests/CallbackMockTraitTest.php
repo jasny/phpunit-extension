@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Jasny\PHPUnit\Tests;
 
 use Jasny\PHPUnit\CallbackMockTrait;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\ExpectationFailedException;
 
-/**
- * @covers \Jasny\PHPUnit\CallbackMockTrait
- */
+#[CoversTrait(CallbackMockTrait::class)]
 class CallbackMockTraitTest extends TestCase
 {
     use CallbackMockTrait;
 
-    protected function forgetMockObjects()
+    protected function forgetMockObjects(): void
     {
         $refl = new \ReflectionProperty(TestCase::class, 'mockObjects');
         $refl->setAccessible(true);
@@ -24,7 +23,7 @@ class CallbackMockTraitTest extends TestCase
         $refl->setValue($this, []);
     }
 
-    public function testCreateCallbackMock()
+    public function testCreateCallbackMock(): void
     {
         $callback = $this->createCallbackMock($this->any());
         
@@ -35,7 +34,7 @@ class CallbackMockTraitTest extends TestCase
         $this->assertNull($callback('zoo'));
     }
     
-    public function testCreateCallbackMockNeverInvoke()
+    public function testCreateCallbackMockNeverInvoke(): void
     {
         $callback = $this->createCallbackMock($this->never());
         
@@ -49,7 +48,7 @@ class CallbackMockTraitTest extends TestCase
         }
     }
     
-    public function testCreateCallbackMockSimpleAssertInvoke()
+    public function testCreateCallbackMockSimpleAssertInvoke(): void
     {
         $callback = $this->createCallbackMock($this->once(), ['foo', 'zoo'], 'bar');
         
@@ -58,7 +57,7 @@ class CallbackMockTraitTest extends TestCase
         $this->assertEquals('bar', $callback('foo', 'zoo'));
     }
     
-    public function testCreateCallbackMockSimpleAssertInvokeFail()
+    public function testCreateCallbackMockSimpleAssertInvokeFail(): void
     {
         $callback = $this->createCallbackMock($this->once(), ['foo'], 'bar');
         
@@ -72,7 +71,7 @@ class CallbackMockTraitTest extends TestCase
         }
     }
     
-    public function testCreateCallbackMockAssertInvoke()
+    public function testCreateCallbackMockAssertInvoke(): void
     {
         $callback = $this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
             $invoke->with('foo', 'zoo')->willReturn('bar');
@@ -83,7 +82,7 @@ class CallbackMockTraitTest extends TestCase
         $this->assertEquals('bar', $callback('foo', 'zoo'));
     }
     
-    public function testCreateCallbackMockAssertInvokeFail()
+    public function testCreateCallbackMockAssertInvokeFail(): void
     {
         $callback = $this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
             $invoke->with('foo');
@@ -99,11 +98,10 @@ class CallbackMockTraitTest extends TestCase
         }
     }
     
-    public function testCreateCallbackMockInvalidAssert()
+    public function testCreateCallbackMockInvalidAssert(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->createCallbackMock($this->once(), 'foo');
     }
 }
-

@@ -9,4 +9,3 @@ trait InContextOfTrait
         return $function->bindTo($this, $object)();
     }
 }
-

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\PHPUnit\Util;
 
-use PHPUnit\Util\RegularExpression;
-
 /**
  * Error handler for expected warnings and notices.
  */
@@ -36,6 +34,13 @@ final class ExpectedWarnings
      */
     private $expected = [];
 
+    /**
+     * Destructor. Automatically unregister.
+     */
+    public function __destruct()
+    {
+        $this->unregister();
+    }
 
     /**
      * Add an expected error.
@@ -64,7 +69,7 @@ final class ExpectedWarnings
 
         return isset($expected['message']) // either 'message' or 'regexp' is set
             ? ($expected['message'] === '' || strpos($expected['message'], $message) !== false)
-            : (bool)RegularExpression::safeMatch($expected['regexp'], $message);
+            : (bool)preg_match($expected['regexp'], $message);
     }
 
     /**

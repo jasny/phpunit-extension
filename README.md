@@ -10,11 +10,11 @@ Jasny PHPUnit extension
 Additional functionality for PHPUnit.
 
 * [Callback mock](#callback-mock) - assert that callback is called with correct arguments.
-* [Safe mocks](#safe-mocks) - disable auto-return value generation for mocks.
-* [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running!
+* [Expected warning](#expected-warning) - assert notice/warning is triggered and continue running.
 * [In context of](#in-context-of) - Access private/protected methods and properties.
+* [Consecutive calls](#consecutive-calls) - Assert multiple calls with different arguments.
 
-Installation
+* Installation
 ---
 
     composer require jasny/phpunit-extension
@@ -203,6 +203,34 @@ class MyTest extends TestCase
 }
 ```
 
-
 _**Beware:** You should only test via public methods and properties. When you're required to access private methods or
 properties to perform tests, something is likely wrong in the architecture of your code._
+
+### Consecutive calls
+
+`ConsecutiveTrait` is a replacement for PHPUnit's `withConsecutive` method which was removed in PHPUnit 10.
+
+```php
+use Jasny\PHPUnit\ConsecutiveTrait;
+use PHPUnit\Framework\TestCase;
+
+class MyTest extends TestCase
+{
+    use ConsecutiveTrait;
+
+    public function test()
+    {
+        $mock = $this->createMock(MyClass::class);
+        $mock->expects($this->exactly(2))
+            ->method('foo')
+            ->with(...$this->consecutive(
+                ['a', 1],
+                ['b', 2],
+            ))
+            ->willReturnOnConsecutiveCalls(10, 42);
+        
+        $this->assertEquals(10, $mock->foo('a', 1));
+        $this->assertEquals(42, $mock->foo('b', 2));
+    }
+}
+```
