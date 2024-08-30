@@ -17,10 +17,13 @@ class InContextOfTraitTest extends TestCase
     {
         $object = new class {
             private $privateProp = "foo";
-            private function privateMethod($planet) { return "hello $planet"; }
+            private function privateMethod($planet)
+            {
+                return "hello $planet";
+            }
         };
         
-        $result = $this->inContextOf($object, fn() => [
+        $result = $this->inContextOf($object, fn($object) => [
             $object->privateProp,
             $object->privateMethod("world")
         ]);
@@ -34,7 +37,6 @@ class InContextOfTraitTest extends TestCase
             private $privateProp = "foo";
         };
         
-        $this->inContextOf($object, fn() => $this->assertEquals('foo', $object->privateProp));
+        $this->inContextOf($object, fn($object) => $this->assertEquals('foo', $object->privateProp));
     }
 }
-

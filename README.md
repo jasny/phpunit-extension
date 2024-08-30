@@ -178,27 +178,27 @@ class MyTest extends TestCase
     {
         $object = new MyObject();
     
-        $result = $this->inContextOf($object, fn() => $object->privateMethod('foo', 'bar'));
+        $result = $this->inContextOf($object, fn($object) => $object->privateMethod('foo', 'bar'));
         $this->assertEquals($result, 'foo-bar');
     }
     
     
     public function testGetPrivateProperty()
     {
-        $value = $this->inContextOf($object, fn() => $object->privateProperty);
+        $value = $this->inContextOf($object, fn($object) => $object->privateProperty);
         $this->assertEquals($value, 999);
     }
     
     
-    /** Alternatively, do the assert in the closure */
+    /** Alternatively, do the assertion in the closure */
     public function testAssertPrivateProperty()
     {
-        $this->inContextOf($object, fn() => $this->assertEquals($object->privateProperty, 999));
+        $this->inContextOf($object, fn($object) => $this->assertEquals($object->privateProperty, 999));
     }
 
     public function testSetPrivateProperty()
     {
-        $this->inContextOf($object, fn() => $object->privateProperty = 42);
+        $this->inContextOf($object, fn($object) => $object->privateProperty = 42);
     }
 }
 ```
